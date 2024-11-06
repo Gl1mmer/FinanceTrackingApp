@@ -8,6 +8,7 @@
 import UIKit
 
 class ListViewCell: UITableViewCell {
+    // based on the category, we set the avatar
     
     static let identifier = String(describing: ListViewCell.self)
     

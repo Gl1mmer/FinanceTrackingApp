@@ -105,14 +105,14 @@ class MainViewController: UIViewController {
     }
     
     @objc func didTappedAddIncomeButton() {
-        let addingVC = AddingViewController(transactionType: .income)
+        let addingVC = AddingViewController(transactionType: .income, categories: mainViewModel.getCategories(transactionType: .income))
         self.navigationItem.backButtonTitle = "Back"
         addingVC.delegate = self
         navigationController?.pushViewController(addingVC, animated: true)
     }
     
     @objc func didTappedAddExpenseButton() {
-        let addingVC = AddingViewController(transactionType: .expense)
+        let addingVC = AddingViewController(transactionType: .expense, categories: mainViewModel.getCategories(transactionType: .expense))
         self.navigationItem.backButtonTitle = "Back"
         addingVC.delegate = self
         navigationController?.pushViewController(addingVC, animated: true)
@@ -136,8 +136,6 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
         return cell
     }
     
-    // asdkjnasjkdnajnds
-    // asdlkjaskdn
 }
 //MARK: - setup subviews
 extension MainViewController {
