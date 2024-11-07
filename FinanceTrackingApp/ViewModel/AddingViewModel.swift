@@ -8,13 +8,15 @@
 import UIKit
 
 final class AddingViewModel {
+
     
-    // probably will be better save each value in different variables whne typing is finished and after call the function createtransaction, it notifies user if some important field is empty, if field is optional to fill, it sends empty string
+    private let transactionType : TransactionType?
     
-    let transactionType : TransactionType?
+    private let categories: [String]?
     
-    init(transactionType: TransactionType) {
+    init(transactionType: TransactionType, categories: [String]) {
         self.transactionType = transactionType
+        self.categories = categories
     }
     
     func createTransaction(
@@ -30,5 +32,13 @@ final class AddingViewModel {
                 description: description,
                 category: category)
         return transaction
+    }
+    
+    func getCategories() -> [String] {
+        categories ?? []
+    }
+    
+    func getTransactionType() -> TransactionType? {
+        transactionType
     }
 }

@@ -14,6 +14,21 @@ final class MainViewModel {
     
     private var allTransactions: [TransactionModel] = []
     
+    private let expenseCategories = [
+        "shopping",
+        "food",
+        "transport",
+        "entertainment",
+        "other"
+    ]
+    
+    private let incomeCategories = [
+        "salary",
+        "bonus",
+        "stipend",
+        "other"
+    ]
+    
     func addNewTransaction(_ transaction: TransactionModel) {
         switch transaction.type {
             case .income:
@@ -39,6 +54,15 @@ final class MainViewModel {
     
     func getExpense() -> String {
         return String(expense)
+    }
+    
+    func getCategories(transactionType: TransactionType) -> [String] {
+        switch transactionType {
+            case .expense:
+                return expenseCategories
+            case .income:
+                return incomeCategories
+        }
     }
     
 }

@@ -32,7 +32,6 @@ final class AddingViewController: UIViewController, UITextFieldDelegate {
             string: "$0",
             attributes: [NSAttributedString.Key.foregroundColor: UIColor.white]
         )
-//        textField.borderStyle = .roundedRect
         textField.textColor = .white
         textField.font = .systemFont(ofSize: 50, weight: .bold)
         textField.backgroundColor = .clear
@@ -49,10 +48,18 @@ final class AddingViewController: UIViewController, UITextFieldDelegate {
     
     private let categoryTextField: UITextField = {
        let textField = UITextField()
-        textField.placeholder = "Write a category"
+        textField.placeholder = "Select a category"
         textField.borderStyle = .roundedRect
+        textField.isUserInteractionEnabled = false
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
+    }()
+    
+    private let categoryMenuButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(systemName: "chevron.down.square"), for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
     }()
     
     private let titleTextField: UITextField = {
@@ -83,8 +90,8 @@ final class AddingViewController: UIViewController, UITextFieldDelegate {
         return button
     }()
     
-    init(transactionType: TransactionType) {
-        addingViewModel = AddingViewModel(transactionType: transactionType)
+    init(transactionType: TransactionType, categories: [String]) {
+        addingViewModel = AddingViewModel(transactionType: transactionType, categories: categories)
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -96,7 +103,7 @@ final class AddingViewController: UIViewController, UITextFieldDelegate {
         super.viewDidLoad()
         view.backgroundColor = .white
         setupSubviews()
-        setupOpeningScreen(transactionType: addingViewModel.transactionType!)
+        setupOpeningScreen(transactionType: addingViewModel.getTransactionType()!)
     }
     
     func setupOpeningScreen(transactionType: TransactionType) {
@@ -128,11 +135,11 @@ extension AddingViewController {
         setupMainView()
         addSubviews()
         setupSubviewsConstraints()
-        addSubviewsStyles()
+        setupCategoryMenu()
     }
     
     private func setupMainView() {
-        view.backgroundColor = .systemBlue // if any error
+        view.backgroundColor = .systemYellow // if any error
     }
     
     private func addSubviews() {
@@ -140,6 +147,7 @@ extension AddingViewController {
         view.addSubview(priceTextField)
         view.addSubview(descriptionView)
         descriptionView.addSubview(categoryTextField)
+        descriptionView.addSubview(categoryMenuButton)
         descriptionView.addSubview(titleTextField)
         descriptionView.addSubview(descriptionTextField)
         descriptionView.addSubview(insertButton)
@@ -150,13 +158,11 @@ extension AddingViewController {
             enterPriceLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
             enterPriceLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
             enterPriceLabel.trailingAnchor.constraint(equalTo: view.centerXAnchor),
-            //            enterPriceLabel.heightAnchor.constraint(equalToConstant: 50),
-            
+
             priceTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
             priceTextField.topAnchor.constraint(equalTo: enterPriceLabel.bottomAnchor, constant: 5),
             priceTextField.trailingAnchor.constraint(equalTo: view.centerXAnchor),
-            //            priceTextField.heightAnchor.constraint(equalToConstant: 50),
-            
+
             descriptionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             descriptionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             descriptionView.topAnchor.constraint(equalTo: priceTextField.bottomAnchor, constant: 30),
@@ -166,6 +172,11 @@ extension AddingViewController {
             categoryTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15),
             categoryTextField.topAnchor.constraint(equalTo: descriptionView.topAnchor, constant: 45),
             categoryTextField.heightAnchor.constraint(equalToConstant: 60),
+            
+            categoryMenuButton.widthAnchor.constraint(equalToConstant: 60),
+            categoryMenuButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15),
+            categoryMenuButton.topAnchor.constraint(equalTo: descriptionView.topAnchor, constant: 45),
+            categoryMenuButton.heightAnchor.constraint(equalToConstant: 60),
             
             titleTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
             titleTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15),
@@ -184,6 +195,18 @@ extension AddingViewController {
         ])
     }
     
-    func addSubviewsStyles() {
+    private func setupCategoryMenu() {
+        var actions: [UIAction] = []
+        for category in addingViewModel.getCategories() {
+            let action = UIAction(title: category) { _ in
+                self.categoryTextField.text = category
+            }
+            actions.append(action)
+        }
+        
+        let categoryMenu = UIMenu(title: "Select a category", children: actions)
+        
+        categoryMenuButton.menu = categoryMenu
+        categoryMenuButton.showsMenuAsPrimaryAction = true
     }
 }
